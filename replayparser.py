@@ -88,11 +88,14 @@ def readMessage(f):
 def readMessages(f):
     stopReading = True
     outermessage = None
+    counter = 0
     while stopReading:
+        counter += 1
         outermessage = readMessage(f)
         callByPacketType(outermessage.msgTypeId, outermessage.buffer)
         if outermessage.msgTypeId == 0:
             stopReading = False
+    print(counter)
     return outermessage
 
 
@@ -110,14 +113,15 @@ def readPackets(m):
     while not eof:
         f, packet, eof = readPacket(f, rd)
         count += 1
+    f.close()
 
 
 def readPacket(f, rd):
     packet = dMsg.dotaPkt()
     packet.type = rd.readUBit()
-    packet.size = rd.readByte()
+    packet.size = rd.readVarInt()
     packet.data = rd.readBytes(packet.size)
-    eof = False if packet.data.__len__() > 0 else True
+    eof = True if f.tell() == f.getvalue().__len__() else False
     return f, packet, eof
 
 
