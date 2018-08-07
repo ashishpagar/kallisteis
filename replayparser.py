@@ -42,6 +42,7 @@ import dotaMsg as dMsg
 import snappy
 import io
 import reader as rdr
+import time
 
 
 def readByte(f):
@@ -117,11 +118,14 @@ def readPackets(m):
 
 
 def readPacket(f, rd):
+    # start_time = time.clock()
     packet = dMsg.dotaPkt()
     packet.type = rd.readUBit()
     packet.size = rd.readVarInt()
     packet.data = rd.readBytes(packet.size)
+    print(packet.type, packet.size)
     eof = True if f.tell() == f.getvalue().__len__() else False
+    # print("seconds = ", time.clock() - start_time)
     return f, packet, eof
 
 

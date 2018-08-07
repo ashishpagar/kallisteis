@@ -12,7 +12,7 @@ class reader:
 
     def readBits(self, bits):
         while bits > self.bitCount:
-            self.bitVal = self.bitVal | (rp.byte_to_int(rp.readByte(self.f)) << self.bitCount)
+            self.bitVal = self.bitVal | (int.from_bytes(self.f.read(1), byteorder='big') << self.bitCount)
             self.bitCount += 8
         x = self.bitVal & ((1 << bits) - 1)
         self.bitVal = self.bitVal >> bits
